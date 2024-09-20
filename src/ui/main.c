@@ -4,10 +4,12 @@
 
 int main(int argc, char const *argv[])
 {
-    char str[] = "hello world";
+    char str[] = "hello";
+    char str2[] = "o";
 
-    char result = str_at(7, str);
-    printf("%c\n", result);
+    int result = str_ends_with(str, str2);
+
+    printf("%d\n", result);
     
     return 0;
 }

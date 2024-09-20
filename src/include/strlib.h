@@ -2,12 +2,9 @@
 #define STRLIB_H
 
 char str_at(int index, char* str);
-
-
-
-// char str_char_at();
-// void str_concat();
-// void str_ends_with();
+char str_char_at(int index, char* str);
+void str_concat(char* firstStr, char* concatValue, char* secondStr);
+int str_ends_with(char* str, char* endsWith);
 // int str_includes();
 // int str_index_of();
 // int str_last_index_of();
