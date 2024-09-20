@@ -5,9 +5,9 @@
 int main(int argc, char const *argv[])
 {
     char str[] = "hello";
-    char str2[] = "o";
+    char str2[] = "ll";
 
-    int result = str_ends_with(str, str2);
+    int result = str_starts_with(str, str2);
 
     printf("%d\n", result);
     

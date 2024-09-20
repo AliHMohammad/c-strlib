@@ -48,12 +48,8 @@ int str_ends_with(char* str, char* endsWith) {
 
     str -= endsWithLength;
 
-    printf("Length of endswith: %d\n", endsWithLength);
-
     while (*str)
     {
-        printf("Letter of str: %c\n", *str);
-        printf("Letter of endsWith: %c\n", *endsWith);
         if (*str == *endsWith) {
             matchCount++;
         }
@@ -61,7 +57,31 @@ int str_ends_with(char* str, char* endsWith) {
         endsWith++;
     }
 
-    printf("Match count: %d\n", matchCount);
-
     return matchCount == endsWithLength ? 1 : 0;
 }
+
+int str_starts_with(char* str, char* startsWith) {
+    int startsWithLength = 0;
+    int matchCount = 0;
+
+    while (*startsWith)
+    {
+        startsWithLength++;
+        startsWith++;
+    }
+
+    startsWith -= startsWithLength;
+
+    while (*startsWith)
+    {
+        if (*str == *startsWith) {
+            matchCount++;
+        }
+        str++;
+        startsWith++;
+    }
+    
+    return matchCount == startsWithLength ? 1 : 0;
+}
+
+
