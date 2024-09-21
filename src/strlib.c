@@ -193,3 +193,224 @@ int str_last_index_of(char* str, char* lastIndexOfStr) {
     
     return -1;
 }
+
+int str_localeCompare(char* firstStr, char* secondStr) {
+    int firstStrLength = 0;
+    int secondStrLength = 0;
+
+    while (*firstStr)
+    {
+        firstStrLength++;
+        firstStr++;
+    }
+
+    while (*secondStr)
+    {
+        secondStrLength++;
+        secondStr++;
+    }
+    
+    if (firstStrLength != secondStrLength) {
+        return 0;
+    }
+
+    firstStr -= firstStrLength;
+    secondStr -= secondStrLength;
+
+    while (*firstStr)
+    {
+        if (*firstStr != *secondStr) {
+            return 0;
+        }
+        firstStr++;
+        secondStr++;
+    }
+
+    return 1;
+}
+
+void str_substring(char* str, int firstIndex, int lastIndex) {
+    int strLength = 0;
+    char *strCpy = str;
+
+    while (*str)
+    {
+        strLength++;
+        str++;
+    }
+
+    str = strCpy;
+
+    if (firstIndex < 0 || lastIndex > strLength || lastIndex <= firstIndex) {
+        printf("Invalid indexes\n");
+        return;
+    }
+
+    for (int i = firstIndex; i < lastIndex; i++) {
+        *str++ = *(strCpy + i);
+    }
+    
+    *str = '\0';
+}
+
+void str_trim(char* str) {
+    char* start = str;
+
+    while (*start == ' ') {
+        start++;
+    }
+
+    if (*start == '\0') {
+        *str = '\0';
+        return;
+    }
+
+    char* end = start;
+
+    while (*end) {
+        end++;
+    }
+
+    end--; // Tilbage til sidste karakter
+
+
+    while (end > start && *end == ' ') {
+        end--;
+    }
+
+    *(end + 1) = '\0';
+
+    while (*start) {
+        *str = *start;
+        str++;
+        start++;
+    }
+
+    *str = '\0'; 
+}
+
+void str_trim_start(char* str) {
+    char* start = str;
+
+    while (*start == ' ') {
+        start++;
+    }
+
+    if (*start == '\0') {
+        *str = '\0';
+        return;
+    }
+
+    while (*start) {
+        *str = *start;
+        str++;
+        start++;
+    }
+
+    *str = '\0';
+}
+
+void str_trim_end(char* str) {
+    char* end = str;
+
+    while (*end) {
+        end++;
+    }
+
+    while (end >= str && *end == ' ') {
+        end--;
+    }
+
+    *(end + 1) = '\0';
+}
+
+void str_pad_end(char* str, int count, char symbol) {
+    while (*str)
+    {
+        str++;
+    }
+
+    while (count)
+    {
+        *str = symbol;
+        str++;
+        count--;
+    }
+
+    *str = '\0';
+}
+
+void str_pad_start(char* str, int count, char symbol) {
+    int strLength = 0;
+    char* cpy = str;
+
+    while (*cpy)
+    {
+        strLength++;
+        cpy++;
+    }
+
+    char* end = str + strLength;
+
+    for (int i = strLength; i >= 0; i--) {
+        *(end + count) = *(str + i); 
+    }
+
+    while (count)
+    {
+        *str = symbol;
+        str++;
+        count--;
+    }
+}
+
+void str_repeat(char* str, int count) {
+    char* initial = str;
+
+    while (*str)
+    {
+        str++;
+    }
+
+    while (count)
+    {
+        char* start = initial;
+
+        while (*start)
+        {
+            *str = *start;
+            str++;
+            start++;
+        }
+
+        count--;
+    }
+
+    *str = '\0';
+}
+
+void str_to_upper_case(char* str){
+    while (*str)
+    {
+        char c = *str;
+
+        if (c == ' ') {
+            *str = c - 32;
+        }
+
+        str++;
+    }
+}
+
+void str_to_lower_case(char* str){
+    while (*str)
+    {
+        char c = *str;
+
+        if (c != ' ') {
+            *str = c + 32;
+        }
+
+        str++;
+    }
+}
