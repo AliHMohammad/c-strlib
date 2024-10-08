@@ -1,5 +1,6 @@
 #include "strlib.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // Tjekker om en byte er en ASCII-værdi (0-127)
 int is_ascii(unsigned char byte) {
@@ -23,8 +24,35 @@ int first_byte_sequence_length(unsigned char byte) {
     } else if ((byte & 0xF8) == 0xF0) {
         return 4;  // 4-byte UTF-8 sekvens
     } else {
-        return 0;  // Ikke en gyldig første byte
+        return 0;
     }
+}
+
+void generate_1_byte_utf8(char* utf8_str, int codePoint) {
+    utf8_str[0] = (char)codePoint;
+    utf8_str[1] = '\0';
+}
+
+void generate_2_byte_utf8(char* utf8_str, int codePoint) {
+    utf8_str[0] = (char)((codePoint >> 6) | 0xC0);    // Første byte: 110xxxxx
+    utf8_str[1] = (char)((codePoint & 0x3F) | 0x80);  // Anden byte: 10xxxxxx
+    utf8_str[2] = '\0';
+}
+
+
+void generate_3_byte_utf8(char* utf8_str, int codePoint) {
+    utf8_str[0] = (char)((codePoint >> 12) | 0xE0);   // Første byte: 1110xxxx
+    utf8_str[1] = (char)(((codePoint >> 6) & 0x3F) | 0x80);  // Anden byte: 10xxxxxx
+    utf8_str[2] = (char)((codePoint & 0x3F) | 0x80);  // Tredje byte: 10xxxxxx
+    utf8_str[3] = '\0';
+}
+
+void generate_4_byte_utf8(char* utf8_str, int codePoint) {
+    utf8_str[0] = (char)((codePoint >> 18) | 0xF0);   // Første byte: 11110xxx
+    utf8_str[1] = (char)(((codePoint >> 12) & 0x3F) | 0x80); // Anden byte: 10xxxxxx
+    utf8_str[2] = (char)(((codePoint >> 6) & 0x3F) | 0x80);  // Tredje byte: 10xxxxxx
+    utf8_str[3] = (char)((codePoint & 0x3F) | 0x80);  // Fjerde byte: 10xxxxxx
+    utf8_str[4] = '\0';
 }
 
 int str_length(char* str) {
@@ -87,6 +115,68 @@ char str_char_at(int index, char* str){
     }
     
     return *str;
+}
+
+int str_code_point_at(int index, char* str) {
+    int i = 0; // Karakterindeks
+    int code_point = 0;
+
+    while (*str) {
+        char first_byte = *str;
+        int seq_length = first_byte_sequence_length(first_byte);
+
+        
+        if (i == index) {
+            
+            if (seq_length == 1) {
+                return first_byte;  // ASCII-karakter, returnér værdien
+            } else if (seq_length > 1) {
+                // Beregn kodepunktet for multi-byte sekvens
+                code_point = first_byte & (0xFF >> seq_length);  // Maske de relevante bits i første byte
+                for (int j = 1; j < seq_length; j++) {
+                    str++;  // Gå til næste byte
+                    if (is_continuation_byte(*str)) {
+                        code_point = (code_point << 6) | (*str & 0x3F);  // Tilføj de lavere 6 bits fra continuation byte
+                    } else {
+                        return -1;
+                    }
+                }
+                return code_point;  // Returnér det samlede kodepunkt
+            } else {
+                return -1;
+            }
+        }
+
+        // Gå til næste karakter
+        if (seq_length > 0) {
+            str += seq_length;  // Spring over sekvensens bytes
+        } else {
+            str++;  // Spring over en enkelt ugyldig byte
+        }
+
+        i++;
+    }
+
+    return -1;
+}
+
+char* str_from_code_point(int codePoint) {
+    char* utf8_str = (char*)malloc(5);
+
+    if (codePoint <= 0x7F) {
+        generate_1_byte_utf8(utf8_str, codePoint);
+    } else if (codePoint <= 0x7FF) {
+        generate_2_byte_utf8(utf8_str, codePoint);
+    } else if (codePoint <= 0xFFFF) {
+        generate_3_byte_utf8(utf8_str, codePoint);
+    } else if (codePoint <= 0x10FFFF) {
+        generate_4_byte_utf8(utf8_str, codePoint);
+    } else {
+        free(utf8_str);
+        return NULL;     
+    }
+
+    return utf8_str;
 }
 
 /*
