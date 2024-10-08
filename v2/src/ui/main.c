@@ -3,9 +3,10 @@
 
 
 int main() {
-    char val[255] = "HELLO WORLD";
-    str_to_lower_case(val);
-    printf("%s\n", val); 
+    char val[255] = "åle";
+    char c = str_char_at(0, val);
+    printf("%c\n", c);
+    printf("%c\n", 'å');
 
     return 0;
 }

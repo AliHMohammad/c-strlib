@@ -1,13 +1,95 @@
 #include "strlib.h"
 #include <stdio.h>
 
+// Tjekker om en byte er en ASCII-værdi (0-127)
+int is_ascii(unsigned char byte) {
+    return byte <= 0x7F;  // ASCII-værdier er mellem 0x00 og 0x7F
+}
+
+// Tjekker om en byte er en continuation byte (0x80-0xBF)
+int is_continuation_byte(unsigned char byte) {
+    return (byte >= 0x80 && byte <= 0xBF);
+}
+
+// Tjekker om en byte er den første byte i en UTF-8-sekvens
+// Returnerer længden af sekvensen, eller 0 hvis ikke første byte
+int first_byte_sequence_length(unsigned char byte) {
+    if (byte <= 0x7F) {
+        return 1;  // 1-byte UTF-8 sekvens (ASCII)
+    } else if ((byte & 0xE0) == 0xC0) {
+        return 2;  // 2-byte UTF-8 sekvens
+    } else if ((byte & 0xF0) == 0xE0) {
+        return 3;  // 3-byte UTF-8 sekvens
+    } else if ((byte & 0xF8) == 0xF0) {
+        return 4;  // 4-byte UTF-8 sekvens
+    } else {
+        return 0;  // Ikke en gyldig første byte
+    }
+}
+
+int str_length(char* str) {
+    int length = 0;
+
+    while (*str) {
+        char current_byte = *str;
+        int seq_length = first_byte_sequence_length(current_byte);
+
+        // Hvis det er en gyldig første byte i en sekvens
+        if (seq_length > 0) {
+            length++;           // Tæl sekvensen
+            str += seq_length;  // Spring over hele sekvensen
+        } else {
+            // Hvis det er en ugyldig byte, spring over den
+            str++;
+        }
+    }
+    
+    return length;
+}
+
 char str_at(int index, char* str) {
-    return *(str += index);
+    int indexCounter = 0;
+
+    while (index != indexCounter)
+    {
+        char current_byte = *str;
+        int seq_length = first_byte_sequence_length(current_byte);
+
+        // Hvis det er en gyldig første byte i en sekvens
+        if (seq_length > 0) {
+            indexCounter++;     // Tæl sekvensen
+            str += seq_length;  // Spring over hele sekvensen
+        } else {
+            // Hvis det er en ugyldig byte, spring over den
+            str++;
+        }
+    }
+    
+    return *str;
 }
 
 char str_char_at(int index, char* str){
-    return *(str += index);
+    int indexCounter = 0;
+
+    while (index != indexCounter)
+    {
+        char current_byte = *str;
+        int seq_length = first_byte_sequence_length(current_byte);
+
+        // Hvis det er en gyldig første byte i en sekvens
+        if (seq_length > 0) {
+            indexCounter++;     // Tæl sekvensen
+            str += seq_length;  // Spring over hele sekvensen
+        } else {
+            // Hvis det er en ugyldig byte, spring over den
+            str++;
+        }
+    }
+    
+    return *str;
 }
+
+/*
 
 void str_concat(char* firstStr, char* concatValue, char* secondStr){
     while (*firstStr) {
@@ -414,3 +496,5 @@ void str_to_lower_case(char* str){
         str++;
     }
 }
+
+*/

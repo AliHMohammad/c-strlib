@@ -1,6 +1,11 @@
 #ifndef STRLIB_H
 #define STRLIB_H
 
+int first_byte_sequence_length(unsigned char byte);
+int is_continuation_byte(unsigned char byte);
+int is_ascii(unsigned char byte);
+
+int str_length(char *str);
 char str_at(int index, char* str);
 char str_char_at(int index, char* str);
 void str_concat(char* firstStr, char* concatValue, char* secondStr);
