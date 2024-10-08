@@ -1,4 +1,4 @@
-# c-strlib - Ali Mohammad
+# c-strlib v2 - Ali Mohammad
 
 Tested on:
 
